@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- IMPORTANDO BOOTSTRAP -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+            crossorigin="anonymous"></script>
+    <!-- DEFINIENDO ESTILO EN GENERAL -->
+    <style>
+       body {
+                background-image: linear-gradient(46deg,rgb(192, 218, 249), #9fc2ef );
+                }
+    </style>
+    <!-- IMPORTANDO ICONOS DE FEATHER -->
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+<div>
+    <header>
+        <div class="pos-f-t">
+            <div class="collapse" id="navbarToggleExternalContent">
+              <div class="bg-dark p-4">
+                <h4 class="text-white">LABORATORIO Calificado </h4>
+                <span class="text-muted">Soluciones en la Nube Deysi Lloja Lucero C24 -B.</span>
+              </div>
+            </div>
+            <nav class="navbar navbar-dark bg-dark">
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <ul class="nav justify-content-center text-white p-2">
+                <li class="nav-item">
+                  <a class="nav-link fst-italic text-white" aria-current="page" href="/">Incio</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link fst-italic text-white" href="">Alumnos</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link fst-italic text-white" href="">Servicios</a>
+                </li>
+              </ul>
+            </nav>
+            
+          </div>
+
+    </header>
+    <main>
+        <div class="container">
+            <div class="row g-5 p-3 ">
+                <div class=" col-sm-8 col-md-8 col-lg-8">
+                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text"><h1>Listado de alumnos</h1></span>
+                        <span class="badge bg-primary rounded-pill">Tecsup</span>
+                    </h4>
+                    <br>
+                    <table class="table bg-white rounded-4">
+                        <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Nombres</th>
+                            <th scope="col">Apellidos</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">DNI</th>
+                            <th scope="col" colspan="2">Opciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for alumno in alumno_list %}
+                            <tr>
+                                <th scope="row">{{ alumno.idAlumno }}</th>
+                                <td>{{ alumno.nombres }}</td>
+                                <td>{{ alumno.apellidos }}</td>
+                                <td>{{ alumno.email }}</td>
+                                <td>{{ alumno.dni }}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" id="btn-edit{{ alumno.idAlumno }}"
+                                            data-bs-toggle="modal" data-bs-target="#modal{{ alumno.idAlumno }}">Edit
+                                    </button>
+                                    <a href="/eliminar/{{ alumno.idAlumno }}" style="color: red;"><i
+                                            data-feather="trash-2"></i></a>
+                                </td>
+                            </tr>
+
+                            <div class="modal fade" id="modal{{ alumno.idAlumno }}" tabindex="-1"
+                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Editar</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="/editar/{{ alumno.idAlumno }}/" method="post">
+                                                {% csrf_token %}
+                                                <label>Nombres</label>
+                                                <input type="text" class="form-control mb-3" name="nombres"
+                                                       value="{{ alumno.nombres }}">
+                                                <label>Apellidos</label>
+                                                <input type="text" class="form-control mb-3" name="apellidos"
+                                                       value="{{ alumno.apellidos }}">
+                                                <label>Email</label>
+                                                <input type="email" class="form-control mb-3" name="email"
+                                                       value="{{ alumno.email }}">
+                                                <label>DNI</label>
+                                                <input type="number" class="form-control mb-3" name="dni"
+                                                       value="{{ alumno.dni }}">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                        </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div class="col-sm-4 col-md-4 col-lg-4 bg-white rounded-4">
+                    <h4 class="mb-2 p-3">Registrar Alumno</h4>
+                    <div>
+                        <form action="/registrar/" method="POST">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-12">
+                                    <label for="" class="form-label">Nombres</label>
+                                    <input type="text" class="form-control" name="nombres" required>
+                                </div>
+                                <div class="col-12">
+                                    <label for="" class="form-label">Apellidos</label>
+                                    <input type="text" class="form-control" name="apellidos" required>
+                                </div>
+                                <div class="col-12">
+                                    <label for="" class="form-label">Email</label>
+                                    <input type="email" step="any" class="form-control" name="email" required>
+                                </div>
+                                <div class="col-12">
+                                    <label for="dni" class="form-label">DNI</label>
+                                    <input type="number" class="form-control" name="dni" required>
+                                </div>
+                            </div>
+                            <hr class="my-4">
+                            <button class="w-100 btn btn-primary btn-lg" type="submit">Registrar</button>
+                        </form>
+                        <br>
+                        <div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="my-5 pt-5 text-muted text-center text-small">
+        <p class="mt-5 mb-3 text-muted">&copy;Terminos y condiciones son reservados</p>
+    </footer>
+</div>
+</body>
+<script>
+    feather.replace()
+</script>
+</html>
